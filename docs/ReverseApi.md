@@ -30,10 +30,10 @@ import 'package:openapi/api.dart';
 var api_instance = new ReverseApi();
 var lat = 17.24; // num | Latitude of the location to generate an address for.
 var lon = 74.25; // num | Longitude of the location to generate an address for.
-var format = json; // String | Format to geocode. Only JSON supported for SDKs
+var format = "json"; // String | Format to geocode. Only JSON supported for SDKs
 var normalizecity = 1; // int | Normalizes village to city level data to city
 var addressdetails = 1; // int | Include a breakdown of the address into elements. Defaults to 1.
-var acceptLanguage = en; // String | Preferred language order for showing search results, overrides the value specified in the Accept-Language HTTP header. Defaults to en. To use native language for the response when available, use accept-language=native
+var acceptLanguage = "en"; // String | Preferred language order for showing search results, overrides the value specified in the Accept-Language HTTP header. Defaults to en. To use native language for the response when available, use accept-language=native
 var namedetails = 0; // int | Include a list of alternative names in the results. These may include language variants, references, operator and brand.
 var extratags = 0; // int | Include additional information in the result if available, e.g. wikipedia link, opening hours.
 
