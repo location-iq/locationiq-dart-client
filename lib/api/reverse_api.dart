@@ -10,7 +10,7 @@ class ReverseApi {
   /// Reverse Geocoding
   ///
   /// Reverse geocoding is the process of converting a coordinate or location (latitude, longitude) to a readable address or place name. This permits the identification of nearby street addresses, places, and/or area subdivisions such as a neighborhood, county, state, or country.
-  Future<Location> reverse(num lat, num lon, String format, int normalizecity, { int addressdetails, String acceptLanguage, int namedetails, int extratags }) async {
+  Future<Location> reverse(num lat, num lon, String format, int normalizecity, { int addressdetails, String acceptLanguage, int namedetails, int extratags, int statecode }) async {
     Object postBody = null;
 
     // verify required params are set
@@ -49,6 +49,9 @@ class ReverseApi {
     }
     if(extratags != null) {
       queryParams.addAll(_convertParametersForCollectionFormat("", "extratags", extratags));
+    }
+    if(statecode != null) {
+      queryParams.addAll(_convertParametersForCollectionFormat("", "statecode", statecode));
     }
 
     List<String> contentTypes = [];

@@ -3,21 +3,25 @@ part of openapi.api;
 class Daybalance {
   
   int day = null;
+  
+  int bonus = null;
   Daybalance();
 
   @override
   String toString() {
-    return 'Daybalance[day=$day, ]';
+    return 'Daybalance[day=$day, bonus=$bonus, ]';
   }
 
   Daybalance.fromJson(Map<String, dynamic> json) {
     if (json == null) return;
     day = json['day'];
+    bonus = json['bonus'];
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'day': day
+      'day': day,
+      'bonus': bonus
     };
   }
 

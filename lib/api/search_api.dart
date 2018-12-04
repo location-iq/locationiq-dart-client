@@ -10,7 +10,7 @@ class SearchApi {
   /// Forward Geocoding
   ///
   /// The Search API allows converting addresses, such as a street address, into geographic coordinates (latitude and longitude). These coordinates can serve various use-cases, from placing markers on a map to helping algorithms determine nearby bus stops. This process is also known as Forward Geocoding.
-  Future<List<Location>> search(String q, String format, int normalizecity, { int addressdetails, String viewbox, int bounded, int limit, String acceptLanguage, String countrycodes, int namedetails, int dedupe, int extratags }) async {
+  Future<List<Location>> search(String q, String format, int normalizecity, { int addressdetails, String viewbox, int bounded, int limit, String acceptLanguage, String countrycodes, int namedetails, int dedupe, int extratags, int statecode }) async {
     Object postBody = null;
 
     // verify required params are set
@@ -60,6 +60,9 @@ class SearchApi {
     }
     if(extratags != null) {
       queryParams.addAll(_convertParametersForCollectionFormat("", "extratags", extratags));
+    }
+    if(statecode != null) {
+      queryParams.addAll(_convertParametersForCollectionFormat("", "statecode", statecode));
     }
 
     List<String> contentTypes = [];
