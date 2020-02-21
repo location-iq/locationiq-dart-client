@@ -7,11 +7,11 @@ class BalanceApi {
 
   BalanceApi([ApiClient apiClient]) : apiClient = apiClient ?? defaultApiClient;
 
-  /// 
+  ///  with HTTP info returned
   ///
   /// The Balance API provides a count of request credits left in the user&#39;s account for the day. Balance is reset at midnight UTC everyday (00:00 UTC).
-  Future<Balance> balance() async {
-    Object postBody = null;
+  Future<Response> balanceWithHttpInfo() async {
+    Object postBody;
 
     // verify required params are set
 
@@ -25,12 +25,12 @@ class BalanceApi {
 
     List<String> contentTypes = [];
 
-    String contentType = contentTypes.length > 0 ? contentTypes[0] : "application/json";
+    String contentType = contentTypes.isNotEmpty ? contentTypes[0] : "application/json";
     List<String> authNames = ["key"];
 
     if(contentType.startsWith("multipart/form-data")) {
       bool hasFields = false;
-      MultipartRequest mp = new MultipartRequest(null, null);
+      MultipartRequest mp = MultipartRequest(null, null);
       if(hasFields)
         postBody = mp;
     }
@@ -45,13 +45,21 @@ class BalanceApi {
                                              formParams,
                                              contentType,
                                              authNames);
+    return response;
+  }
 
+  /// 
+  ///
+  /// The Balance API provides a count of request credits left in the user&#39;s account for the day. Balance is reset at midnight UTC everyday (00:00 UTC).
+  Future<Balance> balance() async {
+    Response response = await balanceWithHttpInfo();
     if(response.statusCode >= 400) {
-      throw new ApiException(response.statusCode, response.body);
+      throw ApiException(response.statusCode, _decodeBodyBytes(response));
     } else if(response.body != null) {
-      return apiClient.deserialize(response.body, 'Balance') as Balance;
+      return apiClient.deserialize(_decodeBodyBytes(response), 'Balance') as Balance;
     } else {
       return null;
     }
   }
+
 }

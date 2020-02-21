@@ -15,26 +15,41 @@ class Balance {
   Balance.fromJson(Map<String, dynamic> json) {
     if (json == null) return;
     status = json['status'];
-    balance = new Daybalance.fromJson(json['balance']);
+    balance = (json['balance'] == null) ?
+      null :
+      Daybalance.fromJson(json['balance']);
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'status': status,
-      'balance': balance
-    };
+    Map <String, dynamic> json = {};
+    if (status != null)
+      json['status'] = status;
+    if (balance != null)
+      json['balance'] = balance;
+    return json;
   }
 
   static List<Balance> listFromJson(List<dynamic> json) {
-    return json == null ? new List<Balance>() : json.map((value) => new Balance.fromJson(value)).toList();
+    return json == null ? List<Balance>() : json.map((value) => Balance.fromJson(value)).toList();
   }
 
-  static Map<String, Balance> mapFromJson(Map<String, Map<String, dynamic>> json) {
-    var map = new Map<String, Balance>();
-    if (json != null && json.length > 0) {
-      json.forEach((String key, Map<String, dynamic> value) => map[key] = new Balance.fromJson(value));
+  static Map<String, Balance> mapFromJson(Map<String, dynamic> json) {
+    var map = Map<String, Balance>();
+    if (json != null && json.isNotEmpty) {
+      json.forEach((String key, dynamic value) => map[key] = Balance.fromJson(value));
     }
     return map;
+  }
+
+  // maps a json object with a list of Balance-objects as value to a dart map
+  static Map<String, List<Balance>> mapListFromJson(Map<String, dynamic> json) {
+    var map = Map<String, List<Balance>>();
+     if (json != null && json.isNotEmpty) {
+       json.forEach((String key, dynamic value) {
+         map[key] = Balance.listFromJson(value);
+       });
+     }
+     return map;
   }
 }
 

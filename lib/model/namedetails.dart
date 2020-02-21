@@ -16,21 +16,33 @@ class Namedetails {
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'name': name
-    };
+    Map <String, dynamic> json = {};
+    if (name != null)
+      json['name'] = name;
+    return json;
   }
 
   static List<Namedetails> listFromJson(List<dynamic> json) {
-    return json == null ? new List<Namedetails>() : json.map((value) => new Namedetails.fromJson(value)).toList();
+    return json == null ? List<Namedetails>() : json.map((value) => Namedetails.fromJson(value)).toList();
   }
 
-  static Map<String, Namedetails> mapFromJson(Map<String, Map<String, dynamic>> json) {
-    var map = new Map<String, Namedetails>();
-    if (json != null && json.length > 0) {
-      json.forEach((String key, Map<String, dynamic> value) => map[key] = new Namedetails.fromJson(value));
+  static Map<String, Namedetails> mapFromJson(Map<String, dynamic> json) {
+    var map = Map<String, Namedetails>();
+    if (json != null && json.isNotEmpty) {
+      json.forEach((String key, dynamic value) => map[key] = Namedetails.fromJson(value));
     }
     return map;
+  }
+
+  // maps a json object with a list of Namedetails-objects as value to a dart map
+  static Map<String, List<Namedetails>> mapListFromJson(Map<String, dynamic> json) {
+    var map = Map<String, List<Namedetails>>();
+     if (json != null && json.isNotEmpty) {
+       json.forEach((String key, dynamic value) {
+         map[key] = Namedetails.listFromJson(value);
+       });
+     }
+     return map;
   }
 }
 

@@ -73,40 +73,71 @@ class Address {
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'house_number': houseNumber,
-      'road': road,
-      'residential': residential,
-      'borough': borough,
-      'neighbourhood': neighbourhood,
-      'quarter': quarter,
-      'hamlet': hamlet,
-      'suburb': suburb,
-      'island': island,
-      'village': village,
-      'town': town,
-      'city': city,
-      'city_district': cityDistrict,
-      'county': county,
-      'state': state,
-      'state_district': stateDistrict,
-      'postcode': postcode,
-      'country': country,
-      'country_code': countryCode,
-      'state_code': stateCode
-    };
+    Map <String, dynamic> json = {};
+    if (houseNumber != null)
+      json['house_number'] = houseNumber;
+    if (road != null)
+      json['road'] = road;
+    if (residential != null)
+      json['residential'] = residential;
+    if (borough != null)
+      json['borough'] = borough;
+    if (neighbourhood != null)
+      json['neighbourhood'] = neighbourhood;
+    if (quarter != null)
+      json['quarter'] = quarter;
+    if (hamlet != null)
+      json['hamlet'] = hamlet;
+    if (suburb != null)
+      json['suburb'] = suburb;
+    if (island != null)
+      json['island'] = island;
+    if (village != null)
+      json['village'] = village;
+    if (town != null)
+      json['town'] = town;
+    if (city != null)
+      json['city'] = city;
+    if (cityDistrict != null)
+      json['city_district'] = cityDistrict;
+    if (county != null)
+      json['county'] = county;
+    if (state != null)
+      json['state'] = state;
+    if (stateDistrict != null)
+      json['state_district'] = stateDistrict;
+    if (postcode != null)
+      json['postcode'] = postcode;
+    if (country != null)
+      json['country'] = country;
+    if (countryCode != null)
+      json['country_code'] = countryCode;
+    if (stateCode != null)
+      json['state_code'] = stateCode;
+    return json;
   }
 
   static List<Address> listFromJson(List<dynamic> json) {
-    return json == null ? new List<Address>() : json.map((value) => new Address.fromJson(value)).toList();
+    return json == null ? List<Address>() : json.map((value) => Address.fromJson(value)).toList();
   }
 
-  static Map<String, Address> mapFromJson(Map<String, Map<String, dynamic>> json) {
-    var map = new Map<String, Address>();
-    if (json != null && json.length > 0) {
-      json.forEach((String key, Map<String, dynamic> value) => map[key] = new Address.fromJson(value));
+  static Map<String, Address> mapFromJson(Map<String, dynamic> json) {
+    var map = Map<String, Address>();
+    if (json != null && json.isNotEmpty) {
+      json.forEach((String key, dynamic value) => map[key] = Address.fromJson(value));
     }
     return map;
+  }
+
+  // maps a json object with a list of Address-objects as value to a dart map
+  static Map<String, List<Address>> mapListFromJson(Map<String, dynamic> json) {
+    var map = Map<String, List<Address>>();
+     if (json != null && json.isNotEmpty) {
+       json.forEach((String key, dynamic value) {
+         map[key] = Address.listFromJson(value);
+       });
+     }
+     return map;
   }
 }
 

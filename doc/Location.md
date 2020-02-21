@@ -8,6 +8,7 @@ import 'package:openapi/api.dart';
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
+**distance** | **num** |  | [optional] [default to null]
 **placeId** | **String** |  | [optional] [default to null]
 **licence** | **String** |  | [optional] [default to null]
 **osmType** | **String** |  | [optional] [default to null]
@@ -21,6 +22,7 @@ Name | Type | Description | Notes
 **importance** | **num** |  | [optional] [default to null]
 **address** | [**Address**](Address.md) |  | [optional] [default to null]
 **namedetails** | [**Namedetails**](Namedetails.md) |  | [optional] [default to null]
+**matchquality** | [**Matchquality**](Matchquality.md) |  | [optional] [default to null]
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 
