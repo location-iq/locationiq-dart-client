@@ -23,11 +23,11 @@ The Balance API provides a count of request credits left in the user's account f
 ```dart
 import 'package:openapi/api.dart';
 // TODO Configure API key authorization: key
-//openapi.api.Configuration.apiKey{'key'} = 'YOUR_API_KEY';
+//defaultApiClient.getAuthentication<ApiKeyAuth>('key').apiKey = 'YOUR_API_KEY';
 // uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-//openapi.api.Configuration.apiKeyPrefix{'key'} = "Bearer";
+//defaultApiClient.getAuthentication<ApiKeyAuth>('key').apiKeyPrefix = 'Bearer';
 
-var api_instance = new BalanceApi();
+var api_instance = BalanceApi();
 
 try { 
     var result = api_instance.balance();

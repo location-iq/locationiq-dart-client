@@ -7,21 +7,21 @@ class SearchApi {
 
   SearchApi([ApiClient apiClient]) : apiClient = apiClient ?? defaultApiClient;
 
-  /// Forward Geocoding
+  /// Forward Geocoding with HTTP info returned
   ///
   /// The Search API allows converting addresses, such as a street address, into geographic coordinates (latitude and longitude). These coordinates can serve various use-cases, from placing markers on a map to helping algorithms determine nearby bus stops. This process is also known as Forward Geocoding.
-  Future<List<Location>> search(String q, String format, int normalizecity, { int addressdetails, String viewbox, int bounded, int limit, String acceptLanguage, String countrycodes, int namedetails, int dedupe, int extratags, int statecode }) async {
-    Object postBody = null;
+  Future<Response> searchWithHttpInfo(String q, String format, int normalizecity, { int addressdetails, String viewbox, int bounded, int limit, String acceptLanguage, String countrycodes, int namedetails, int dedupe, int extratags, int statecode, int matchquality, int postaladdress }) async {
+    Object postBody;
 
     // verify required params are set
     if(q == null) {
-     throw new ApiException(400, "Missing required param: q");
+     throw ApiException(400, "Missing required param: q");
     }
     if(format == null) {
-     throw new ApiException(400, "Missing required param: format");
+     throw ApiException(400, "Missing required param: format");
     }
     if(normalizecity == null) {
-     throw new ApiException(400, "Missing required param: normalizecity");
+     throw ApiException(400, "Missing required param: normalizecity");
     }
 
     // create path and map variables
@@ -64,15 +64,21 @@ class SearchApi {
     if(statecode != null) {
       queryParams.addAll(_convertParametersForCollectionFormat("", "statecode", statecode));
     }
+    if(matchquality != null) {
+      queryParams.addAll(_convertParametersForCollectionFormat("", "matchquality", matchquality));
+    }
+    if(postaladdress != null) {
+      queryParams.addAll(_convertParametersForCollectionFormat("", "postaladdress", postaladdress));
+    }
 
     List<String> contentTypes = [];
 
-    String contentType = contentTypes.length > 0 ? contentTypes[0] : "application/json";
+    String contentType = contentTypes.isNotEmpty ? contentTypes[0] : "application/json";
     List<String> authNames = ["key"];
 
     if(contentType.startsWith("multipart/form-data")) {
       bool hasFields = false;
-      MultipartRequest mp = new MultipartRequest(null, null);
+      MultipartRequest mp = MultipartRequest(null, null);
       if(hasFields)
         postBody = mp;
     }
@@ -87,13 +93,21 @@ class SearchApi {
                                              formParams,
                                              contentType,
                                              authNames);
+    return response;
+  }
 
+  /// Forward Geocoding
+  ///
+  /// The Search API allows converting addresses, such as a street address, into geographic coordinates (latitude and longitude). These coordinates can serve various use-cases, from placing markers on a map to helping algorithms determine nearby bus stops. This process is also known as Forward Geocoding.
+  Future<List<Location>> search(String q, String format, int normalizecity, { int addressdetails, String viewbox, int bounded, int limit, String acceptLanguage, String countrycodes, int namedetails, int dedupe, int extratags, int statecode, int matchquality, int postaladdress }) async {
+    Response response = await searchWithHttpInfo(q, format, normalizecity,  addressdetails: addressdetails, viewbox: viewbox, bounded: bounded, limit: limit, acceptLanguage: acceptLanguage, countrycodes: countrycodes, namedetails: namedetails, dedupe: dedupe, extratags: extratags, statecode: statecode, matchquality: matchquality, postaladdress: postaladdress );
     if(response.statusCode >= 400) {
-      throw new ApiException(response.statusCode, response.body);
+      throw ApiException(response.statusCode, _decodeBodyBytes(response));
     } else if(response.body != null) {
-      return (apiClient.deserialize(response.body, 'List<Location>') as List).map((item) => item as Location).toList();
+      return (apiClient.deserialize(_decodeBodyBytes(response), 'List<Location>') as List).map((item) => item as Location).toList();
     } else {
       return null;
     }
   }
+
 }

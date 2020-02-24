@@ -10,17 +10,17 @@ class QueryParam {
 class ApiClient {
 
   String basePath;
-  var client = new BrowserClient();
+  var client = Client();
 
   Map<String, String> _defaultHeaderMap = {};
   Map<String, Authentication> _authentications = {};
 
-  final _RegList = new RegExp(r'^List<(.*)>$');
-  final _RegMap = new RegExp(r'^Map<String,(.*)>$');
+  final _regList = RegExp(r'^List<(.*)>$');
+  final _regMap = RegExp(r'^Map<String,(.*)>$');
 
-  ApiClient({this.basePath: "https://eu1.locationiq.com/v1"}) {
+  ApiClient({this.basePath = "https://eu1.locationiq.com/v1"}) {
     // Setup authentications (key: authentication name, value: authentication).
-    _authentications['key'] = new ApiKeyAuth("query", "key");
+    _authentications['key'] = ApiKeyAuth("query", "key");
   }
 
   void addDefaultHeader(String key, String value) {
@@ -39,36 +39,52 @@ class ApiClient {
         case 'double':
           return value is double ? value : double.parse('$value');
         case 'Address':
-          return new Address.fromJson(value);
+          return Address.fromJson(value);
         case 'Balance':
-          return new Balance.fromJson(value);
+          return Balance.fromJson(value);
         case 'Daybalance':
-          return new Daybalance.fromJson(value);
+          return Daybalance.fromJson(value);
+        case 'DirectionsDirections':
+          return DirectionsDirections.fromJson(value);
+        case 'DirectionsDirectionsRoutes':
+          return DirectionsDirectionsRoutes.fromJson(value);
+        case 'DirectionsMatching':
+          return DirectionsMatching.fromJson(value);
+        case 'DirectionsMatrix':
+          return DirectionsMatrix.fromJson(value);
+        case 'DirectionsMatrixSources':
+          return DirectionsMatrixSources.fromJson(value);
+        case 'DirectionsNearest':
+          return DirectionsNearest.fromJson(value);
+        case 'DirectionsNearestWaypoints':
+          return DirectionsNearestWaypoints.fromJson(value);
         case 'Error':
-          return new Error.fromJson(value);
+          return Error.fromJson(value);
         case 'Location':
-          return new Location.fromJson(value);
+          return Location.fromJson(value);
+        case 'Matchquality':
+          return Matchquality.fromJson(value);
         case 'Namedetails':
-          return new Namedetails.fromJson(value);
+          return Namedetails.fromJson(value);
         default:
           {
             Match match;
             if (value is List &&
-                (match = _RegList.firstMatch(targetType)) != null) {
+                (match = _regList.firstMatch(targetType)) != null) {
               var newTargetType = match[1];
               return value.map((v) => _deserialize(v, newTargetType)).toList();
             } else if (value is Map &&
-                (match = _RegMap.firstMatch(targetType)) != null) {
+                (match = _regMap.firstMatch(targetType)) != null) {
               var newTargetType = match[1];
-              return new Map.fromIterables(value.keys,
+              return Map.fromIterables(value.keys,
                   value.values.map((v) => _deserialize(v, newTargetType)));
             }
           }
       }
-    } catch (e, stack) {
-      throw new ApiException.withInner(500, 'Exception during deserialization.', e, stack);
+    } on Exception catch (e, stack) {
+      throw ApiException.withInner(500, 'Exception during deserialization.', e, stack);
     }
-    throw new ApiException(500, 'Could not find a suitable class for deserialization');
+    throw ApiException(500, 'Could not find a suitable class for deserialization');
   }
 
   dynamic deserialize(String json, String targetType) {
@@ -77,7 +93,7 @@ class ApiClient {
 
     if (targetType == 'String') return json;
 
-    var decodedJson = JSON.decode(json);
+    var decodedJson = jsonDecode(json);
     return _deserialize(decodedJson, targetType);
   }
 
@@ -86,7 +102,7 @@ class ApiClient {
     if (obj == null) {
       serialized = '';
     } else {
-      serialized = JSON.encode(obj);
+      serialized = json.encode(obj);
     }
     return serialized;
   }
@@ -104,7 +120,10 @@ class ApiClient {
 
     _updateParamsForAuth(authNames, queryParams, headerParams);
 
-    var ps = queryParams.where((p) => p.value != null).map((p) => '${p.name}=${p.value}');
+    var ps = queryParams
+      .where((p) => p.value != null)
+      .map((p) => '${p.name}=${Uri.encodeQueryComponent(p.value)}');
+
     String queryString = ps.isNotEmpty ?
                          '?' + ps.join('&') :
                          '';
@@ -115,7 +134,7 @@ class ApiClient {
     headerParams['Content-Type'] = contentType;
 
     if(body is MultipartRequest) {
-      var request = new MultipartRequest(method, Uri.parse(url));
+      var request = MultipartRequest(method, Uri.parse(url));
       request.fields.addAll(body.fields);
       request.files.addAll(body.files);
       request.headers.addAll(body.headers);
@@ -133,6 +152,8 @@ class ApiClient {
           return client.delete(url, headers: headerParams);
         case "PATCH":
           return client.patch(url, headers: headerParams, body: msgBody);
+        case "HEAD":
+          return client.head(url, headers: headerParams);
         default:
           return client.get(url, headers: headerParams);
       }
@@ -144,16 +165,14 @@ class ApiClient {
   void _updateParamsForAuth(List<String> authNames, List<QueryParam> queryParams, Map<String, String> headerParams) {
     authNames.forEach((authName) {
       Authentication auth = _authentications[authName];
-      if (auth == null) throw new ArgumentError("Authentication undefined: " + authName);
+      if (auth == null) throw ArgumentError("Authentication undefined: " + authName);
       auth.applyToParams(queryParams, headerParams);
     });
   }
 
-  void setAccessToken(String accessToken) {
-    _authentications.forEach((key, auth) {
-      if (auth is OAuth) {
-        auth.setAccessToken(accessToken);
-      }
-    });
+  T getAuthentication<T extends Authentication>(String name) {
+    var authentication = _authentications[name];
+
+    return authentication is T ? authentication : null;
   }
 }
