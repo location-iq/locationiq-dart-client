@@ -19,10 +19,10 @@ class DirectionsMatching {
     code = json['code'];
     tracepoints = (json['tracepoints'] == null) ?
       null :
-      Object.listFromJson(json['tracepoints']);
+      DirectionsMatching.listFromJson(json['tracepoints']);
     matchings = (json['matchings'] == null) ?
       null :
-      Object.listFromJson(json['matchings']);
+      DirectionsMatching.listFromJson(json['matchings']);
   }
 
   Map<String, dynamic> toJson() {
