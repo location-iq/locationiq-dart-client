@@ -19,7 +19,7 @@ class DirectionsDirections {
     code = json['code'];
     waypoints = (json['waypoints'] == null) ?
       null :
-      Object.listFromJson(json['waypoints']);
+      DirectionsDirections.listFromJson(json['waypoints']);
     routes = (json['routes'] == null) ?
       null :
       DirectionsDirectionsRoutes.listFromJson(json['routes']);

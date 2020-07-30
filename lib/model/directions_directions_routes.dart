@@ -24,7 +24,7 @@ class DirectionsDirectionsRoutes {
     if (json == null) return;
     legs = (json['legs'] == null) ?
       null :
-      Object.listFromJson(json['legs']);
+      DirectionsDirectionsRoutes.listFromJson(json['legs']);
     weightName = json['weight_name'];
     geometry = json['geometry'];
     weight = json['weight'];
