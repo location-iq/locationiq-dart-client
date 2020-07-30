@@ -77,12 +77,12 @@ class AutocompleteApi {
   /// 
   ///
   /// The Autocomplete API is a variant of the Search API that returns place predictions in response to an HTTP request.  The request specifies a textual search string and optional geographic bounds.  The service can be used to provide autocomplete functionality for text-based geographic searches, by returning places such as businesses, addresses and points of interest as a user types. The Autocomplete API can match on full words as well as substrings. Applications can therefore send queries as the user types, to provide on-the-fly place predictions.
-  Future<List<Object>> autocomplete(String q, int normalizecity, { int limit, String viewbox, int bounded, String countrycodes, String acceptLanguage, String tag }) async {
+  Future<List<Location>> autocomplete(String q, int normalizecity, { int limit, String viewbox, int bounded, String countrycodes, String acceptLanguage, String tag }) async {
     Response response = await autocompleteWithHttpInfo(q, normalizecity,  limit: limit, viewbox: viewbox, bounded: bounded, countrycodes: countrycodes, acceptLanguage: acceptLanguage, tag: tag );
     if(response.statusCode >= 400) {
       throw ApiException(response.statusCode, _decodeBodyBytes(response));
     } else if(response.body != null) {
-      return (apiClient.deserialize(_decodeBodyBytes(response), 'List<Object>') as List).map((item) => item as Object).toList();
+      return (apiClient.deserialize(_decodeBodyBytes(response), 'List<Location>') as List).map((item) => item as Location).toList();
     } else {
       return null;
     }
